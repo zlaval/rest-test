@@ -3,8 +3,8 @@ plugins {
     id("idea")
     id 'org.jetbrains.kotlin.jvm' version '1.3.71'
     id("pl.allegro.tech.build.axion-release") version "1.10.0"
-    id("com.bmuschko.docker-remote-api") version "6.4.0"
-    id 'java-library-distribution'
+    id("com.bmuschko.docker-java-application") version "6.4.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 group 'com.zlrx.container'
@@ -14,34 +14,39 @@ repositories {
     mavenCentral()
 }
 
-distZip.shouldRunAfter(build)
 
-jar {
-    manifest {
-        attributes "Main-Class": "com.zlrx.container.resttest.StartKt",
-        'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+docker {
+    registryCredentials {
+        url.set("https://index.docker.io/v1")
+        username.set(dockerUser)
+        password.set(dockerPw)
+        email.set(dockerEmail)
     }
+
+    javaApplication {
+        baseImage = 'anapsix/alpine-java'
+        maintainer = 'Zalan Toth "zlaval@gmail.com"'
+        mainClassName = 'com.zlrx.container.resttest.StartKt'
+        ports = [4567]
+        images = ['zalerix/rest-test:1.0', 'zalerix/rest-test:latest']
+    }
+
 }
 
-
-//val dockerUser: String by project
-//val dockerPw: String by project
-//val dockerEmail: String by project
-
-//docker {
-//    registryCredentials {
-//        url.set("https://index.docker.io/v1")
-//        username.set(dockerUser)
-//        password.set(dockerPw)
-//        email.set(dockerEmail)
-//    }
-//    tasks.create("createDockerfile", Dockerfile::javaClass) {
-//        from("openjdk:jre-alpine")
-//        copyFile("build/lib/rest-test-1.0.jar", "/app/rest-test.jar")
-//        entryPoint("java")
-//        defaultCommand("-jar", "/app/rest-test.jar")
-//        exposePort(8080)
-//    }
+//tasks.create('createDockerfile', Dockerfile) {
+//    from()
+//    copyFile('/build/libs/rest-test-1.0-all.jar', '/app/rest-test.jar')
+//    entryPoint('java')
+//    defaultCommand('-jar', '/app/rest-test.jar')
+//    exposePort(4567)
+//}
+//
+//
+//createDockerfile { dependsOn shadowJar }
+//
+//task buildImage(type: DockerBuildImage) {
+//    dependsOn createDockerfile
+//    images.add('zalerix/rest-test:latest')
 //}
 
 dependencies {
