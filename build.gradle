@@ -1,0 +1,59 @@
+plugins {
+    id("java")
+    id("idea")
+    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
+    id("pl.allegro.tech.build.axion-release") version "1.10.0"
+    id("com.bmuschko.docker-remote-api") version "6.4.0"
+    id 'java-library-distribution'
+}
+
+group 'com.zlrx.container'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+distZip.shouldRunAfter(build)
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.zlrx.container.resttest.StartKt",
+        'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+    }
+}
+
+
+//val dockerUser: String by project
+//val dockerPw: String by project
+//val dockerEmail: String by project
+
+//docker {
+//    registryCredentials {
+//        url.set("https://index.docker.io/v1")
+//        username.set(dockerUser)
+//        password.set(dockerPw)
+//        email.set(dockerEmail)
+//    }
+//    tasks.create("createDockerfile", Dockerfile::javaClass) {
+//        from("openjdk:jre-alpine")
+//        copyFile("build/lib/rest-test-1.0.jar", "/app/rest-test.jar")
+//        entryPoint("java")
+//        defaultCommand("-jar", "/app/rest-test.jar")
+//        exposePort(8080)
+//    }
+//}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "com.sparkjava:spark-core:2.9.1"
+    implementation "com.sparkjava:spark-kotlin:1.0.0-alpha"
+
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
