@@ -4,7 +4,6 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.71'
     id("pl.allegro.tech.build.axion-release") version "1.10.0"
     id("com.bmuschko.docker-java-application") version "6.4.0"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 group 'com.zlrx.container'
@@ -13,7 +12,6 @@ version '1.0'
 repositories {
     mavenCentral()
 }
-
 
 docker {
     registryCredentials {
@@ -32,22 +30,6 @@ docker {
     }
 
 }
-
-//tasks.create('createDockerfile', Dockerfile) {
-//    from()
-//    copyFile('/build/libs/rest-test-1.0-all.jar', '/app/rest-test.jar')
-//    entryPoint('java')
-//    defaultCommand('-jar', '/app/rest-test.jar')
-//    exposePort(4567)
-//}
-//
-//
-//createDockerfile { dependsOn shadowJar }
-//
-//task buildImage(type: DockerBuildImage) {
-//    dependsOn createDockerfile
-//    images.add('zalerix/rest-test:latest')
-//}
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
